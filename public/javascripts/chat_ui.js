@@ -10,6 +10,14 @@ var addMessage = function(message, nick) {
   $(".messages").append("<p>"+nick+": "+message+"</p>");
 }
 
+var modifyUserList = function(userList) {
+  var ul = $("<ul>");
+  for(var i = 0; i < userList.length; i++) {
+    ul.append("<li>"+userList[i]+"</li>");
+  }
+  $(".users").html(ul);
+}
+
 $(function() {
   var socket = io.connect();
   socket.on('message', function(data) {
@@ -17,10 +25,9 @@ $(function() {
     addMessage(data.text, data.nick);
   });
 
-  // socket.on('message', function(data) {
-  //   console.log(data);
-  //   addMessage(data.text, data.nick);
-  // });
+  socket.on('changeUsers', function(data) {
+    modifyUserList(data.userList);
+  });
 
   $("#send-message").on('click', function() {
     var message = getMessage();
